@@ -1,9 +1,7 @@
-# phonepe_Pulse project
+# Phonepe_Pulse project
 Phonepe Pulse Data Visualization
 
 ![phonepe_name](https://user-images.githubusercontent.com/114122027/233252011-a5cddbdd-4090-4121-8d01-2e252597afa7.jpg)
-
-
 Data Visualization and Exploration : A User-Friendly Tool Using Streamlit and Plotly
 
 # What is PhonePe Pulse?
