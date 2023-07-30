@@ -111,7 +111,19 @@ To insert the datadrame into SQL first I've created a new database and tables us
         
         # the connection is not auto committed by default, so we must commit to save our changes
         mydb.commit()
-        
+
+
+## Potential Applications
+
+1. **Identifying trends and patterns**: Data scientists can use the app to identify trends and patterns in transaction data, such as which categories of transactions are increasing or decreasing in frequency.
+
+2. **Conducting market research**: The app can be used to analyze transaction data to gain insights into consumer behavior and preferences, which can be valuable for conducting market research.
+
+3. **Developing predictive models**: The insights gained from analyzing the transaction data can be used to develop predictive models, such as predicting future transaction volumes or identifying customers who are likely to churn.
+
+4. **Monitoring business performance**: Data scientists can use the app to monitor the performance of various business metrics, such as transaction volume, revenue, and customer acquisition and retention.
+
+5. **Improving customer experience**: By analyzing transaction data and identifying areas where customers are experiencing friction or challenges, data scientists can work with product teams to improve the customer experience and increase customer satisfaction.
  
 
 
