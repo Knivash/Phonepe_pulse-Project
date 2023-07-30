@@ -126,9 +126,9 @@ To insert the datadrame into SQL first I've created a new database and tables us
 5. **Improving customer experience**: By analyzing transaction data and identifying areas where customers are experiencing friction or challenges, data scientists can work with product teams to improve the customer experience and increase customer satisfaction.
  
 
+## Disclaimer
 
-
-
+This application is intended for educational and research purposes only and should not be used for any commercial or unethical activities.
 
 
 
