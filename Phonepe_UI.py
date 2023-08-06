@@ -187,6 +187,7 @@ with tab2:
                          )
 
 
+# 1_Overview
 
 import streamlit as st
 import plotly.express as px
@@ -317,4 +318,212 @@ st.subheader(':blue[Registered User Count by State]')
 
 st.plotly_chart(user_state_fig, use_container_width = True)
 
+
+
+# 2_Transactiom
+
+import streamlit as st
+import plotly.express as px
+from streamlit_extras.add_vertical_space import add_vertical_space
+
+
+# Data Prep
+
+
+agg_trans = trans_df = trans_df_2 = st.session_state["agg_trans_df"]
+map_df = st.session_state["map_trans_df"]
+
+states = agg_trans["State"].unique()
+years = agg_trans["Year"].unique()
+quarters = agg_trans["Quarter"].unique()
+
+if 'states' not in st.session_state:
+    st.session_state["states"] = states
+if 'years' not in st.session_state:
+    st.session_state["years"] = years
+if 'quarters' not in st.session_state:
+    st.session_state["quarters"] = quarters
+
+
+# App
+
+
+# st.set_page_config(page_title = 'Transaction', layout = 'wide', page_icon = 'Related Images and Videos/Logo.png')
+st.title(':blue[Transaction]')
+add_vertical_space(3)
+
+
+#1
+
+
+st.subheader(':blue[Transaction amount breakdown]')
+
+
+col1, col2, col3 = st.columns([5, 3, 1])
+
+state1 = col1.selectbox("State", states, key='state1')
+year1 = col2.selectbox("Year", years, key='year1')
+quarter_options = ["All"] + list(map(str, quarters))
+quarter1 = col3.selectbox("Quarter", quarter_options, key='quarter1')
+
+trans_df = trans_df[(trans_df["State"] == state1) & (trans_df["Year"] == year1)]
+
+if quarter1 != 'All':
+    trans_df = trans_df[(trans_df["Quarter"] == int(quarter1))]
+
+trans_df = trans_df.sort_values("Transaction_amount", ascending=False).reset_index(drop = True)
+
+suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == '1' else "nd" if quarter1 == '2' else "rd" if quarter1 == '3' else "th"
+
+title1 = f"Transaction details of {state1} for {quarter1.lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}"
+
+fig1 = px.bar(
+             trans_df, x="Transaction_type", y="Transaction_amount",
+             color="Transaction_type",
+             color_discrete_sequence=px.colors.qualitative.Plotly,
+             title=title1,
+             labels=dict(Transaction_amount='Transaction Amount', Transaction_type='Transaction Type'),
+             hover_data={'Quarter': True}
+             )
+
+fig1.update_layout(
+                   showlegend=False,
+                   title={
+                       'x': 0.5,
+                       'xanchor': 'center',
+                       'y': 0.9,
+                       'yanchor': 'top'
+                       },
+                   width = 900, height = 500
+                   )
+
+fig1.update_traces(marker = dict(line = dict(width = 1, color = 'DarkSlateGrey')))
+
+st.plotly_chart(fig1)
+
+expander1 = st.expander(label = 'Detailed view')
+expander1.write(trans_df.loc[:, ['Quarter', 'Transaction_type', 'Transaction_amount']].reset_index(drop=True))
+
+
+
+#2
+
+
+st.subheader(":blue[Breakdown by transaction count proportion]")
+
+
+state_pie, year_pie, quarter_pie = st.columns([5, 3, 1])
+
+state3 = state_pie.selectbox('State', options = states, key = 'state3')
+year3 = year_pie.selectbox('Year', options = years, key = 'year3')
+quarter3 = quarter_pie.selectbox('Quarter', options = quarter_options, key = 'quarter3')
+
+filtered_trans = trans_df_2[(trans_df_2.State == state3) & (trans_df_2.Year == year3)]
+
+if quarter3 != 'All':
+    filtered_trans = filtered_trans[filtered_trans.Quarter == int(quarter3)]
+
+fig3 = px.pie(
+              filtered_trans, names = 'Transaction_type',
+              values = 'Transaction_count', hole = .65
+              )
+
+fig3.update_layout(width = 900, height = 500)
+
+st.plotly_chart(fig3)
+
+expander3 = st.expander(label = 'Detailed view')
+expander3.write(filtered_trans.loc[:, ['Quarter', 'Transaction_type', 'Transaction_count']].reset_index(drop = True))
+
+
+# 2_Users
+
+
+import streamlit as st
+import plotly.express as px
+from streamlit_extras.add_vertical_space import add_vertical_space
+
+# Data Prep
+
+agg_user_df1 = st.session_state["agg_user_df"]
+map_user_df1 = st.session_state["map_user_df"]
+top_user_dist_df1 = st.session_state["top_user_dist_df"]
+
+# App
+
+
+#st.set_page_config(page_title='Users', layout='wide', page_icon='Related Images and Videos/Logo.png')
+st.title(':blue[Users]')
+add_vertical_space(3)
+
+# 1
+
+
+st.subheader(':blue[Transaction Count and Percentage by Brand]')
+
+col1, col2, col3 = st.columns([5, 3, 1])
+
+state_options = ['All'] + [state for state in st.session_state['states']]
+quarter_options = ["All"] + list(map(str, st.session_state['quarters']))
+
+# state1 = col1.selectbox('State', options=state_options, key='state1')
+# year1 = col2.selectbox('Year', options=st.session_state['years'], key='year1')
+# quarter1 = col3.selectbox("Quarter", options=quarter_options, key='quarter1')
+
+if state1 == "All":
+
+    agg_user_df_filtered = agg_user_df1[(agg_user_df1['Year'] == year1)]
+
+    if quarter1 != 'All':
+        agg_user_df_filtered = agg_user_df_filtered[agg_user_df_filtered['Quarter'] == int(quarter1)]
+
+    suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == '1' else "nd" if quarter1 == '2' else "rd" if quarter1 == '3' else "th"
+
+    title1 = f"Transaction Count and Percentage across all states for {quarter1.lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}"
+
+else:
+
+    agg_user_df_filtered = agg_user_df1[(agg_user_df1['State'] == state1) & (agg_user_df1['Year'] == year1)]
+
+    if quarter1 != 'All':
+        agg_user_df_filtered = agg_user_df_filtered[agg_user_df_filtered['Quarter'] == int(quarter1)]
+
+    suffix1 = " quarters" if quarter1 == 'All' else "st" if quarter1 == '1' else "nd" if quarter1 == '2' else "rd" if quarter1 == '3' else "th"
+
+    title1 = f"Transaction Count and Percentage in {state1} for {quarter1.lower()}{suffix1} {'' if quarter1 == 'All' else 'quarter'} of {year1}"
+
+fig1 = px.treemap(
+    agg_user_df_filtered,
+    path=['Brand'],
+    values='Transaction_count',
+    color='Percentage',
+    color_continuous_scale='ylorbr',
+    hover_data={'Percentage': ':.2%'},
+    hover_name='Brand'
+)
+
+fig1.update_layout(
+    width=975, height=600,
+    coloraxis_colorbar=dict(tickformat='.1%', len=0.85),
+    margin=dict(l=20, r=20, t=0, b=20),
+    title={
+        "text": title1,
+        'x': 0.45,
+        'xanchor': 'center',
+        'y': 0.007,
+        'yanchor': 'bottom'
+    }
+)
+
+fig1.update_traces(
+    hovertemplate=
+    '<b>%{label}</b><br>Transaction Count: %{value}<br>Percentage: %{color:.2%}<extra></extra>'
+)
+
+st.plotly_chart(fig1)
+
+expander1 = st.expander(label='Detailed view')
+expander1.write(agg_user_df_filtered.loc[:, ['State', 'Quarter', 'Brand', 'Percentage']])
+
+add_vertical_space(2)
 
