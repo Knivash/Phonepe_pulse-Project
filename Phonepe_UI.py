@@ -1,6 +1,7 @@
 import io
 import pandas as pd
 import streamlit as st
+import mysql.connector
 import ydata_profiling
 import xlsxwriter
 from streamlit_player import st_player
@@ -34,6 +35,61 @@ if 'options' not in st.session_state:
         'Top User Pincodewise': 'top_user_pin_df'
     }
 
+
+# # Database connection details
+# db_config = {
+#     "host": "127.0.0.1",
+#     "user": "root",
+#     "password": "root",
+#     "database": "phonepe_pulse"
+# }
+#
+# # Establish database connection
+# try:
+#     connection = mysql.connector.connect(**db_config)
+# except mysql.connector.Error as err:
+#     st.error(f"Error connecting to MySQL: {err}")
+# else:
+#     st.success("Connected to MySQL")
+#
+#     # Define SQL queries to fetch data
+#     sql_queries = {
+#         'agg_trans_df': 'SELECT * FROM agg_trans',
+#         'agg_user_df': 'SELECT * FROM agg_user',
+#         'map_trans_df': 'SELECT * FROM map_trans',
+#         'map_user_df': 'SELECT * FROM map_user',
+#         'top_trans_dist_df': 'SELECT * FROM top_trans_dist',
+#         'top_trans_pin_df': 'SELECT * FROM top_trans_pin',
+#         'top_user_dist_df': 'SELECT * FROM top_user_dist',
+#         'top_user_pin_df': 'SELECT * FROM top_user_pin'
+#     }
+#
+#     # Load data into session state
+#     if 'options' not in st.session_state:
+#         st.session_state['options'] = {
+#             'Aggregate Transaction': 'agg_trans_df',
+#             'Aggregate User': 'agg_user_df',
+#             'Map Transaction': 'map_trans_df',
+#             'Map User': 'map_user_df',
+#             'Top Transaction Districtwise': 'top_trans_dist_df',
+#             'Top Transaction Pincodewise': 'top_trans_pin_df',
+#             'Top User Districtwise': 'top_user_dist_df',
+#             'Top User Pincodewise': 'top_user_pin_df'
+#         }
+#
+#     if 'df_list' not in st.session_state:
+#         st.session_state['df_list'] = []
+#
+#         for df_name, sql_query in sql_queries.items():
+#             df = pd.read_sql(sql_query, connection)
+#             st.session_state[df_name] = df
+#             st.session_state['df_list'].append(df_name)
+#
+#     # Close the database connection
+#     connection.close()
+
+
+
 df_names = [
     var_name for var_name in globals()
     if isinstance(globals()[var_name], pd.core.frame.DataFrame) and var_name.endswith('_df')
@@ -56,9 +112,9 @@ for df_name in st.session_state['df_list']:
     year_to_str(df)
     globals()[df_name] = df
 
+
 # App
-
-
+# Streamlit app configuration and layout
 st.set_page_config(
     page_title='PhonePe Data Visualization', layout='wide',
     page_icon='Related Images and Videos/Logo.png'
@@ -526,4 +582,3 @@ expander1 = st.expander(label='Detailed view')
 expander1.write(agg_user_df_filtered.loc[:, ['State', 'Quarter', 'Brand', 'Percentage']])
 
 add_vertical_space(2)
-
